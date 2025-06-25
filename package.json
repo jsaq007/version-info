@@ -46,7 +46,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jsaq007/version-info.git"
+    "url": "git+https://github.com/jsaq007/version-info.git"
   },
   "bugs": {
     "url": "https://github.com/jsaq007/version-info/issues"
