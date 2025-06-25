@@ -1,6 +1,6 @@
 {
   "name": "@julian-querido/version-info",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight version information utility for React/Vite applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
