@@ -1,0 +1,80 @@
+{
+  "name": "@julian-querido/version-info",
+  "version": "1.0.0",
+  "description": "Lightweight version information utility for React/Vite applications",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run test",
+    "version:patch": "node scripts/update-version.js patch",
+    "version:minor": "node scripts/update-version.js minor",
+    "version:major": "node scripts/update-version.js major"
+  },
+  "keywords": [
+    "version",
+    "versioning",
+    "build-info",
+    "react",
+    "vite",
+    "typescript",
+    "environment",
+    "deployment"
+  ],
+  "author": "Julian Querido",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsaq007/version-info.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jsaq007/version-info/issues"
+  },
+  "homepage": "https://github.com/jsaq007/version-info#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.1.8",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.0.0",
+    "jsdom": "^26.1.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-dts": "^6.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}
