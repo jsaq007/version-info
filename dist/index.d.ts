@@ -1,3 +1,4 @@
+import * as react_jsx_runtime from 'react/jsx-runtime';
 import React from 'react';
 
 interface VersionInfo {
@@ -61,15 +62,21 @@ declare const useVersionInfo: (config?: Partial<VersionConfig>) => VersionInfo;
  */
 declare const useVersionDisplay: (config?: Partial<VersionConfig>) => string;
 /**
- * React component to display version information
+ * Simple React component to display version information (matches version-fix.tsx)
+ */
+declare function VersionDisplay({ className }: {
+    className?: string;
+}): react_jsx_runtime.JSX.Element;
+/**
+ * Advanced React component to display version information with full configuration
  */
 interface VersionDisplayProps extends Partial<VersionConfig> {
     className?: string;
     children?: (version: string, info: VersionInfo) => React.ReactNode;
 }
-declare const VersionDisplay: React.FC<VersionDisplayProps>;
+declare const VersionDisplayAdvanced: React.FC<VersionDisplayProps>;
 
 //# sourceMappingURL=index.d.ts.map
 
-export { VersionDisplay, createVersionFormatter, getVersionInfo as default, formatVersion, getEnvVar, getShortCommitHash, getVersionInfo, incrementVersion, parseBuildTime, useVersionDisplay, useVersionInfo };
+export { VersionDisplay, VersionDisplayAdvanced, createVersionFormatter, getVersionInfo as default, formatVersion, getEnvVar, getShortCommitHash, getVersionInfo, incrementVersion, parseBuildTime, useVersionDisplay, useVersionInfo };
 export type { Environment, VersionConfig, VersionDisplayProps, VersionFormatter, VersionInfo };
