@@ -172,6 +172,7 @@ interface VersionInfoWebpackPluginOptions {
 }
 /**
  * Webpack plugin that automatically sets up version information environment variables
+ * Note: Webpack is an optional dependency. If webpack is not available, this plugin will throw an error.
  */
 declare class VersionInfoWebpackPlugin {
     private options;

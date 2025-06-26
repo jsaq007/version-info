@@ -19,6 +19,8 @@ A lightweight, performant version information utility for React/Vite application
 npm install @julian-querido/version-info
 ```
 
+**Note:** This package has no required dependencies. React, Vite, and Webpack are optional peer dependencies.
+
 ## Quick Start
 
 ### Zero-Config Usage (Recommended)
@@ -36,6 +38,18 @@ console.log(versionInfo);
 const formattedVersion = formatVersion(versionInfo);
 console.log(formattedVersion);
 // 'v1.0.1 (development) #abc123d'
+```
+
+### Core-Only Usage (No React)
+
+If you don't need React components, use the core-only export:
+
+```typescript
+import { getVersionInfo, formatVersion } from '@julian-querido/version-info/core';
+
+// Same functionality, no React dependency
+const versionInfo = getVersionInfo();
+console.log(formatVersion(versionInfo));
 ```
 
 ### React Zero-Config Usage
@@ -282,7 +296,7 @@ export default defineConfig({
 });
 ```
 
-#### Webpack Plugin
+#### Webpack Plugin (Optional)
 
 ```javascript
 // webpack.config.js
@@ -303,6 +317,8 @@ module.exports = {
   // No manual environment variable setup needed!
 };
 ```
+
+**Note:** The Webpack plugin requires webpack to be installed as a dependency in your project. If webpack is not available, the plugin will throw a helpful error message.
 
 ### Manual Configuration (Legacy)
 
@@ -424,6 +440,17 @@ If environment variables are not being set by plugins:
 - Ensure the plugin is properly imported and added to your config
 - Check that the plugin is listed before other plugins that might override values
 - Verify your build system is supported (Vite, Webpack)
+
+#### Webpack Plugin Errors
+If you get webpack-related errors in a Vite project:
+- The webpack plugin is optional and only needed for webpack projects
+- Use the Vite plugin instead: `import { versionInfoPlugin } from '@julian-querido/version-info/vite'`
+- Or use the core functionality without plugins: `import { getVersionInfo } from '@julian-querido/version-info/core'`
+
+#### React Dependencies in Non-React Projects
+If you get React-related errors in a non-React project:
+- Use the core-only export: `import { getVersionInfo } from '@julian-querido/version-info/core'`
+- This provides all functionality without React dependencies
 
 ### Manual Override Options
 

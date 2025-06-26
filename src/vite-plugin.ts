@@ -1,5 +1,6 @@
 import type { Plugin } from 'vite';
 import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './auto-detect';
+import { incrementVersion } from './utils';
 
 export interface VersionInfoPluginOptions {
   /**
@@ -61,7 +62,6 @@ export function versionInfoPlugin(options: VersionInfoPluginOptions = {}): Plugi
       let version = productionVersion;
       if (environment !== 'production') {
         // For non-production, increment the version
-        const { incrementVersion } = require('./utils');
         version = incrementVersion(productionVersion);
       }
 

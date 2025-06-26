@@ -39,6 +39,7 @@ export interface VersionInfoWebpackPluginOptions {
 
 /**
  * Webpack plugin that automatically sets up version information environment variables
+ * Note: Webpack is an optional dependency. If webpack is not available, this plugin will throw an error.
  */
 export class VersionInfoWebpackPlugin {
   private options: VersionInfoWebpackPluginOptions;
@@ -48,6 +49,14 @@ export class VersionInfoWebpackPlugin {
   }
 
   apply(compiler: any) {
+    // Check if webpack is available
+    let webpack: any;
+    try {
+      webpack = require('webpack');
+    } catch (error) {
+      throw new Error('Webpack is required for VersionInfoWebpackPlugin. Please install webpack as a dependency.');
+    }
+
     // Auto-detect information
     const packageInfo = getPackageInfo();
     const gitInfo = getGitInfo();
@@ -69,7 +78,7 @@ export class VersionInfoWebpackPlugin {
     }
 
     // Define environment variables
-    const definePlugin = new (require('webpack').DefinePlugin)({
+    const definePlugin = new webpack.DefinePlugin({
       'process.env.VITE_VERSION': JSON.stringify(version),
       'process.env.VITE_PACKAGE_VERSION': JSON.stringify(packageVersion),
       'process.env.VITE_APP_ENV': JSON.stringify(environment),

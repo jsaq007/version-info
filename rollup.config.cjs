@@ -28,7 +28,30 @@ module.exports = [
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: ['react'],
+    external: ['react', 'webpack', 'vite'],
+  },
+  // Core-only library (no React)
+  {
+    input: 'src/core-only.ts',
+    output: [
+      {
+        file: 'dist/core-only.js',
+        format: 'cjs',
+        sourcemap: true,
+      },
+      {
+        file: 'dist/core-only.esm.js',
+        format: 'esm',
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.json' }),
+      terser(),
+    ],
+    external: ['webpack', 'vite'],
   },
   // Vite plugin
   {
@@ -80,6 +103,12 @@ module.exports = [
   {
     input: 'dist/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    plugins: [dts()],
+    external: [/\.css$/],
+  },
+  {
+    input: 'dist/core-only.d.ts',
+    output: [{ file: 'dist/core-only.d.ts', format: 'esm' }],
     plugins: [dts()],
     external: [/\.css$/],
   },

@@ -11,6 +11,11 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./core": {
+      "import": "./dist/core-only.esm.js",
+      "require": "./dist/core-only.js",
+      "types": "./dist/core-only.d.ts"
+    },
     "./vite": {
       "import": "./dist/vite-plugin.esm.js",
       "require": "./dist/vite-plugin.js",
@@ -81,10 +86,18 @@
     "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "webpack": ">=4.0.0",
+    "vite": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "webpack": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   }
