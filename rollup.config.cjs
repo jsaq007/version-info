@@ -28,7 +28,7 @@ module.exports = [
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: ['react', 'webpack', 'vite'],
+    external: ['react'],
   },
   // Core-only library (no React)
   {
@@ -51,7 +51,7 @@ module.exports = [
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: ['webpack', 'vite'],
+    external: [],
   },
   // Vite plugin
   {

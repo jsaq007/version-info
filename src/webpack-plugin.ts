@@ -1,4 +1,5 @@
 import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './auto-detect';
+import { incrementVersion } from './utils';
 
 export interface VersionInfoWebpackPluginOptions {
   /**
@@ -73,7 +74,6 @@ export class VersionInfoWebpackPlugin {
     let version = productionVersion;
     if (environment !== 'production') {
       // For non-production, increment the version
-      const { incrementVersion } = require('./utils');
       version = incrementVersion(productionVersion);
     }
 
