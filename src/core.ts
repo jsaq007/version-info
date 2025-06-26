@@ -1,24 +1,31 @@
 import type { VersionInfo, VersionConfig, Environment } from './types';
 import { incrementVersion, getEnvVar, parseBuildTime, getShortCommitHash } from './utils';
+import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './auto-detect';
 
 /**
  * Get version information from environment variables and configuration
+ * Now with automatic package.json and Git detection
  */
 export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => {
-  // Read from Vite environment variables with fallbacks
+  // Auto-detect package.json and Git information
+  const packageInfo = getPackageInfo();
+  const gitInfo = getGitInfo();
+  const envInfo = getEnvironmentInfo();
+
+  // Read from Vite environment variables with improved fallbacks
   const viteVersion = config?.productionVersion || getEnvVar('VITE_VERSION');
-  const viteAppEnv = config?.environment || getEnvVar('VITE_APP_ENV') || getEnvVar('NODE_ENV') || 'development';
-  const vitePackageVersion = config?.packageVersion || getEnvVar('VITE_PACKAGE_VERSION') || getEnvVar('npm_package_version') || '0.0.0';
-  const viteCommitHash = config?.commitHash || getEnvVar('VITE_COMMIT_HASH') || getEnvVar('GITHUB_SHA');
-  const viteBuildTime = config?.buildTime || parseBuildTime(getEnvVar('VITE_BUILD_TIME'));
+  const viteAppEnv = config?.environment || getEnvVar('VITE_APP_ENV') || envInfo.nodeEnv;
+  const vitePackageVersion = config?.packageVersion || getEnvVar('VITE_PACKAGE_VERSION') || getEnvVar('npm_package_version') || packageInfo.version;
+  const viteCommitHash = config?.commitHash || getEnvVar('VITE_COMMIT_HASH') || getEnvVar('GITHUB_SHA') || gitInfo.commitHash;
+  const viteBuildTime = config?.buildTime || parseBuildTime(getEnvVar('VITE_BUILD_TIME')) || envInfo.buildTime.toString();
 
   // Determine the environment
   const environment = viteAppEnv || 'development';
 
-  // Determine the version (preserve v prefix if present)
-  let version = '0.0.0';
-  let productionVersion = viteVersion || 'v0.0.0';
-  let packageVersion = vitePackageVersion || '0.0.0';
+  // Determine the version with better defaults
+  let version = 'v0.0.0';
+  let productionVersion = viteVersion || `v${packageInfo.version}`;
+  let packageVersion = vitePackageVersion || packageInfo.version;
 
   // Clean production version for comparison
   const productionVersionClean = productionVersion.startsWith('v')
@@ -43,6 +50,9 @@ export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => 
     commitHash: viteCommitHash,
     environment,
     packageVersion: vitePackageVersion,
+    branch: gitInfo.branch,
+    shortHash: gitInfo.shortHash,
+    tag: gitInfo.tag,
   };
 };
 
@@ -85,6 +95,8 @@ export const formatVersion = (
     showEnvironment = true,
     showCommitHash = true,
     showBuildTime = false,
+    showBranch = false,
+    showTag = false,
   } = config || {};
 
   // Only add 'v' if not already present
@@ -102,6 +114,14 @@ export const formatVersion = (
 
   if (showCommitHash && info.commitHash) {
     displayText += ` #${getShortCommitHash(info.commitHash)}`;
+  }
+
+  if (showBranch && info.branch && info.branch !== 'main' && info.branch !== 'master') {
+    displayText += ` [${info.branch}]`;
+  }
+
+  if (showTag && info.tag) {
+    displayText += ` ${info.tag}`;
   }
 
   if (showBuildTime && info.buildTime) {

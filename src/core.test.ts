@@ -15,6 +15,27 @@ vi.mock('./utils', () => ({
   }),
 }));
 
+// Mock the auto-detect module
+vi.mock('./auto-detect', () => ({
+  getGitInfo: vi.fn(() => ({
+    commitHash: 'cbf50cc1234567890abcdef',
+    shortHash: 'cbf50cc',
+    branch: 'main',
+    tag: undefined,
+  })),
+  getPackageInfo: vi.fn(() => ({
+    version: '1.0.0',
+    name: 'test-package',
+  })),
+  getEnvironmentInfo: vi.fn(() => ({
+    nodeEnv: 'development',
+    isProduction: false,
+    isDevelopment: true,
+    isTest: false,
+    buildTime: 1640995200000,
+  })),
+}));
+
 import { getEnvVar, parseBuildTime, getShortCommitHash, incrementVersion } from './utils';
 
 describe('getVersionInfo', () => {
@@ -43,6 +64,9 @@ describe('getVersionInfo', () => {
       commitHash: 'abc123def',
       environment: 'production',
       packageVersion: '1.0.0',
+      branch: 'main',
+      shortHash: 'cbf50cc',
+      tag: undefined,
     });
   });
 
@@ -64,6 +88,9 @@ describe('getVersionInfo', () => {
       commitHash: 'def456ghi',
       environment: 'staging',
       packageVersion: '2.0.0',
+      branch: 'main',
+      shortHash: 'cbf50cc',
+      tag: undefined,
     });
   });
 
@@ -113,6 +140,9 @@ describe('formatVersion', () => {
     commitHash: 'abc123def',
     environment: 'staging',
     packageVersion: '1.0.0',
+    branch: 'feature-branch',
+    shortHash: 'abc123d',
+    tag: 'v1.0.0',
   };
 
   beforeEach(() => {
@@ -148,6 +178,18 @@ describe('formatVersion', () => {
     const result = formatVersion(mockVersionInfo, { showBuildTime: true });
 
     expect(result).toBe('v1.0.0 (staging) #abc123d @2022-01-01');
+  });
+
+  it('should include branch when requested', () => {
+    const result = formatVersion(mockVersionInfo, { showBranch: true });
+
+    expect(result).toBe('v1.0.0 (staging) #abc123d [feature-branch]');
+  });
+
+  it('should include tag when requested', () => {
+    const result = formatVersion(mockVersionInfo, { showTag: true });
+
+    expect(result).toBe('v1.0.0 (staging) #abc123d v1.0.0');
   });
 
   it('should handle missing optional fields', () => {

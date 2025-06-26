@@ -1,6 +1,7 @@
 import type { VersionInfo, VersionConfig } from './types';
 /**
  * Get version information from environment variables and configuration
+ * Now with automatic package.json and Git detection
  */
 export declare const getVersionInfo: (config?: Partial<VersionConfig>) => VersionInfo;
 /**

@@ -11,6 +11,7 @@ A lightweight, performant version information utility for React/Vite application
 - 🎨 **Customizable**: Configurable display options
 - 📱 **React Ready**: Includes React hooks and components
 - 🔒 **Type Safe**: Full TypeScript support
+- 🎉 **Zero Config**: Works out of the box with automatic detection
 
 ## Installation
 
@@ -20,7 +21,41 @@ npm install @julian-querido/version-info
 
 ## Quick Start
 
-### Basic Usage
+### Zero-Config Usage (Recommended)
+
+The package now works out of the box with automatic detection of package.json and Git information!
+
+```typescript
+import { getVersionInfo, formatVersion } from '@julian-querido/version-info';
+
+// Works immediately - no setup required!
+const versionInfo = getVersionInfo();
+console.log(versionInfo);
+// { version: 'v1.0.1', environment: 'development', commitHash: 'abc123d', ... }
+
+const formattedVersion = formatVersion(versionInfo);
+console.log(formattedVersion);
+// 'v1.0.1 (development) #abc123d'
+```
+
+### React Zero-Config Usage
+
+```tsx
+import { useVersionDisplay, VersionDisplay } from '@julian-querido/version-info';
+
+function App() {
+  const version = useVersionDisplay(); // Works out of the box!
+  
+  return (
+    <div>
+      <p>Version: {version}</p>
+      <VersionDisplay className="text-sm text-gray-500" />
+    </div>
+  );
+}
+```
+
+### Basic Usage (Legacy)
 
 ```typescript
 import { getVersionInfo, formatVersion } from '@julian-querido/version-info';
@@ -52,6 +87,35 @@ function App() {
     </div>
   );
 }
+```
+
+## Auto-Detection Features
+
+The package now automatically detects:
+
+- **Package.json Version**: Reads `package.json` and uses its version as default
+- **Git Information**: Automatically detects commit hash, branch, and tags
+- **Build System**: Detects Vite, Webpack, Rollup, or Parcel configurations
+- **Environment**: Uses `NODE_ENV` or auto-detects from build context
+
+### Auto-Detection Utilities
+
+```typescript
+import { getGitInfo, getPackageInfo, detectBuildSystem } from '@julian-querido/version-info';
+
+// Get Git information
+const gitInfo = getGitInfo();
+console.log(gitInfo);
+// { commitHash: 'abc123def456', shortHash: 'abc123d', branch: 'main', tag: 'v1.0.0' }
+
+// Get package information
+const packageInfo = getPackageInfo();
+console.log(packageInfo);
+// { version: '1.0.0', name: 'my-app' }
+
+// Detect build system
+const buildSystem = detectBuildSystem();
+console.log(buildSystem); // 'vite', 'webpack', 'rollup', 'parcel', or 'unknown'
 ```
 
 ## Environment Variables
@@ -186,12 +250,63 @@ interface VersionConfig {
   showEnvironment?: boolean;     // Show environment in display
   showCommitHash?: boolean;      // Show commit hash in display
   showBuildTime?: boolean;       // Show build time in display
+  showBranch?: boolean;          // Show branch in display
+  showTag?: boolean;             // Show tag in display
 }
 ```
 
 ## Build System Integration
 
-### Vite
+### Zero-Config Plugins (Recommended)
+
+#### Vite Plugin
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import { versionInfoPlugin } from '@julian-querido/version-info/vite';
+
+export default defineConfig({
+  plugins: [
+    // Zero-config plugin - automatically sets up all environment variables
+    versionInfoPlugin(),
+    
+    // Or with custom options
+    // versionInfoPlugin({
+    //   environment: 'staging',
+    //   includeGitInfo: true,
+    //   includeBuildTime: true,
+    // }),
+  ],
+  // No manual environment variable setup needed!
+});
+```
+
+#### Webpack Plugin
+
+```javascript
+// webpack.config.js
+const { VersionInfoWebpackPlugin } = require('@julian-querido/version-info/webpack');
+
+module.exports = {
+  plugins: [
+    // Zero-config plugin - automatically sets up all environment variables
+    new VersionInfoWebpackPlugin(),
+    
+    // Or with custom options
+    // new VersionInfoWebpackPlugin({
+    //   environment: 'staging',
+    //   includeGitInfo: true,
+    //   includeBuildTime: true,
+    // }),
+  ],
+  // No manual environment variable setup needed!
+};
+```
+
+### Manual Configuration (Legacy)
+
+#### Vite
 
 ```typescript
 // vite.config.ts
@@ -205,7 +320,7 @@ export default defineConfig({
 });
 ```
 
-### Webpack
+#### Webpack
 
 ```javascript
 // webpack.config.js
@@ -281,6 +396,47 @@ function EnvironmentBadge() {
     </span>
   );
 }
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Git Information Not Available
+If Git information is not being detected:
+- Ensure you're in a Git repository
+- Check that Git is installed and accessible
+- The package will gracefully fall back to empty values
+
+#### Package.json Not Found
+If package.json is not being read:
+- Ensure you're running from the project root directory
+- Check that package.json exists and is valid JSON
+- The package will fall back to version '0.0.0'
+
+#### Build System Not Detected
+If your build system is not detected:
+- Check that your config file exists (vite.config.js, webpack.config.js, etc.)
+- The package will work with manual configuration as fallback
+
+#### Environment Variables Not Set
+If environment variables are not being set by plugins:
+- Ensure the plugin is properly imported and added to your config
+- Check that the plugin is listed before other plugins that might override values
+- Verify your build system is supported (Vite, Webpack)
+
+### Manual Override Options
+
+If auto-detection doesn't work for your use case, you can always override values:
+
+```typescript
+const versionInfo = getVersionInfo({
+  productionVersion: 'v2.0.0',
+  environment: 'staging',
+  commitHash: 'custom-hash',
+  showEnvironment: true,
+  showCommitHash: true,
+});
 ```
 
 ## Migration from Existing Version System

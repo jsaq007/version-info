@@ -11,6 +11,16 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./vite": {
+      "import": "./dist/vite-plugin.esm.js",
+      "require": "./dist/vite-plugin.js",
+      "types": "./dist/vite-plugin.d.ts"
+    },
+    "./webpack": {
+      "import": "./dist/webpack-plugin.esm.js",
+      "require": "./dist/webpack-plugin.js",
+      "types": "./dist/webpack-plugin.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [
