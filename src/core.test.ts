@@ -15,8 +15,8 @@ vi.mock('./utils', () => ({
   }),
 }));
 
-// Mock the auto-detect module
-vi.mock('./auto-detect', () => ({
+// Mock the client module (which the core module now imports from)
+vi.mock('./client', () => ({
   getGitInfo: vi.fn(() => ({
     commitHash: 'cbf50cc1234567890abcdef',
     shortHash: 'cbf50cc',

@@ -1,6 +1,6 @@
 import type { VersionInfo, VersionConfig, Environment } from './types';
 import { incrementVersion, getEnvVar, parseBuildTime, getShortCommitHash } from './utils';
-import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './auto-detect';
+import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './client';
 
 /**
  * Get version information from environment variables and configuration

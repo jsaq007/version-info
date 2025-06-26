@@ -7,7 +7,7 @@ const dts = require('rollup-plugin-dts').default;
 const packageJson = require('./package.json');
 
 module.exports = [
-  // Main library
+  // Main library (client-safe)
   {
     input: 'src/index.ts',
     output: [
@@ -28,9 +28,32 @@ module.exports = [
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: ['react'],
+    external: ['react', 'child_process', 'fs', 'path'],
   },
-  // Core-only library (no React)
+  // Client-only library (no server-side plugins)
+  {
+    input: 'src/client-only.ts',
+    output: [
+      {
+        file: 'dist/client-only.js',
+        format: 'cjs',
+        sourcemap: true,
+      },
+      {
+        file: 'dist/client-only.esm.js',
+        format: 'esm',
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.json' }),
+      terser(),
+    ],
+    external: ['react', 'child_process', 'fs', 'path'],
+  },
+  // Core-only library (client-safe, no React)
   {
     input: 'src/core-only.ts',
     output: [
@@ -51,9 +74,9 @@ module.exports = [
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: [],
+    external: ['child_process', 'fs', 'path'],
   },
-  // Vite plugin
+  // Vite plugin (server-side)
   {
     input: 'src/vite.ts',
     output: [
@@ -76,7 +99,7 @@ module.exports = [
     ],
     external: ['vite'],
   },
-  // Webpack plugin
+  // Webpack plugin (server-side)
   {
     input: 'src/webpack.ts',
     output: [
@@ -103,6 +126,12 @@ module.exports = [
   {
     input: 'dist/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    plugins: [dts()],
+    external: [/\.css$/],
+  },
+  {
+    input: 'dist/client-only.d.ts',
+    output: [{ file: 'dist/client-only.d.ts', format: 'esm' }],
     plugins: [dts()],
     external: [/\.css$/],
   },

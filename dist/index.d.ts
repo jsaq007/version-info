@@ -28,17 +28,17 @@ type Environment = 'production' | 'staging' | 'development' | 'test';
 interface VersionFormatter {
     (info: VersionInfo, config?: Partial<VersionConfig>): string;
 }
-interface GitInfo$1 {
+interface GitInfo {
     commitHash: string;
     shortHash: string;
     branch: string;
     tag?: string;
 }
-interface PackageInfo$1 {
+interface PackageInfo {
     version: string;
     name: string;
 }
-type BuildSystem$1 = 'vite' | 'webpack' | 'rollup' | 'parcel' | 'unknown';
+type BuildSystem = 'vite' | 'webpack' | 'rollup' | 'parcel' | 'unknown';
 
 /**
  * Get version information from environment variables and configuration
@@ -71,31 +71,24 @@ declare const parseBuildTime: (timestamp?: string) => string | undefined;
  */
 declare const getShortCommitHash: (hash?: string, length?: number) => string | undefined;
 
-interface GitInfo {
-    commitHash: string;
-    shortHash: string;
-    branch: string;
-    tag?: string;
-}
-interface PackageInfo {
-    version: string;
-    name: string;
-}
-type BuildSystem = 'vite' | 'webpack' | 'rollup' | 'parcel' | 'unknown';
 /**
- * Automatically detect Git information without requiring manual setup
+ * Client-safe version of getGitInfo
+ * Returns empty values since Git info is only available at build time
  */
 declare const getGitInfo: () => GitInfo;
 /**
- * Automatically read package.json from the current working directory
+ * Client-safe version of getPackageInfo
+ * Returns default values since package.json is only available at build time
  */
 declare const getPackageInfo: () => PackageInfo;
 /**
- * Automatically detect build system and provide appropriate setup
+ * Client-safe version of detectBuildSystem
+ * Returns 'unknown' since build system detection is only available at build time
  */
 declare const detectBuildSystem: () => BuildSystem;
 /**
- * Get environment information
+ * Client-safe version of getEnvironmentInfo
+ * Uses browser-safe APIs to get environment information
  */
 declare const getEnvironmentInfo: () => {
     nodeEnv: string;
@@ -206,4 +199,4 @@ declare const VersionDisplayAdvanced: React.FC<VersionDisplayProps>;
 //# sourceMappingURL=index.d.ts.map
 
 export { VersionDisplay, VersionDisplayAdvanced, VersionInfoWebpackPlugin, createVersionFormatter, getVersionInfo as default, detectBuildSystem, formatVersion, getEnvVar, getEnvironmentInfo, getGitInfo, getPackageInfo, getShortCommitHash, getVersionInfo, incrementVersion, parseBuildTime, useVersionDisplay, useVersionInfo, versionInfoPlugin };
-export type { BuildSystem$1 as BuildSystem, Environment, GitInfo$1 as GitInfo, PackageInfo$1 as PackageInfo, VersionConfig, VersionDisplayProps, VersionFormatter, VersionInfo, VersionInfoPluginOptions, VersionInfoWebpackPluginOptions };
+export type { BuildSystem, Environment, GitInfo, PackageInfo, VersionConfig, VersionDisplayProps, VersionFormatter, VersionInfo, VersionInfoPluginOptions, VersionInfoWebpackPluginOptions };

@@ -1,4 +1,4 @@
-import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './auto-detect';
+import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './server';
 import { incrementVersion } from './utils';
 
 export interface VersionInfoWebpackPluginOptions {

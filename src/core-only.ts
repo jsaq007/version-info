@@ -2,8 +2,8 @@
 export { getVersionInfo, formatVersion, createVersionFormatter } from './core';
 export { incrementVersion, getEnvVar, parseBuildTime, getShortCommitHash } from './utils';
 
-// Auto-detection exports
-export { getGitInfo, getPackageInfo, detectBuildSystem, getEnvironmentInfo } from './auto-detect';
+// Auto-detection exports (client-safe versions)
+export { getGitInfo, getPackageInfo, detectBuildSystem, getEnvironmentInfo } from './client';
 
 // Type exports
 export type {

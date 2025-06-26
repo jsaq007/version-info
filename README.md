@@ -1,5 +1,14 @@
 # @julian-querido/version-info
 
+## What's New in 1.1.2
+
+- 🟢 **Full Vite Compatibility:** No more missing `./utils` or `webpack` errors in Vite projects. The package now works seamlessly in Vite-based React projects.
+- 🧩 **Build-System Agnostic:** Webpack and Vite are now truly optional peer dependencies. The package auto-detects your build system and only loads what's needed.
+- 🛠️ **No More Hard Requires:** All internal utilities are bundled correctly. No more require errors in ESM environments.
+- 📝 **Improved Documentation:** See below for updated usage and troubleshooting tips.
+
+---
+
 A lightweight, performant version information utility for React/Vite applications. Automatically handles version display across different environments (production, staging, development) with smart version incrementing and configurable formatting.
 
 ## Features
@@ -19,7 +28,7 @@ A lightweight, performant version information utility for React/Vite application
 npm install @julian-querido/version-info
 ```
 
-**Note:** This package has no required dependencies. React, Vite, and Webpack are optional peer dependencies.
+**Note:** This package has no required dependencies. React, Vite, and Webpack are all optional peer dependencies. You only need to install the ones you use in your project.
 
 ## Quick Start
 
@@ -284,7 +293,6 @@ export default defineConfig({
   plugins: [
     // Zero-config plugin - automatically sets up all environment variables
     versionInfoPlugin(),
-    
     // Or with custom options
     // versionInfoPlugin({
     //   environment: 'staging',
@@ -296,6 +304,8 @@ export default defineConfig({
 });
 ```
 
+> **Note:** The Vite plugin works out of the box. You do NOT need webpack or any webpack dependencies in a Vite project.
+
 #### Webpack Plugin (Optional)
 
 ```javascript
@@ -306,7 +316,6 @@ module.exports = {
   plugins: [
     // Zero-config plugin - automatically sets up all environment variables
     new VersionInfoWebpackPlugin(),
-    
     // Or with custom options
     // new VersionInfoWebpackPlugin({
     //   environment: 'staging',
@@ -318,7 +327,7 @@ module.exports = {
 };
 ```
 
-**Note:** The Webpack plugin requires webpack to be installed as a dependency in your project. If webpack is not available, the plugin will throw a helpful error message.
+> **Note:** The Webpack plugin requires webpack to be installed as a dependency in your project. If webpack is not available, the plugin will throw a helpful error message. You do NOT need webpack for Vite or other build systems.
 
 ### Manual Configuration (Legacy)
 
@@ -439,13 +448,13 @@ If your build system is not detected:
 If environment variables are not being set by plugins:
 - Ensure the plugin is properly imported and added to your config
 - Check that the plugin is listed before other plugins that might override values
-- Verify your build system is supported (Vite, Webpack)
+- Verify your build system is supported (Vite, Webpack, Rollup, Parcel)
 
-#### Webpack Plugin Errors
-If you get webpack-related errors in a Vite project:
-- The webpack plugin is optional and only needed for webpack projects
-- Use the Vite plugin instead: `import { versionInfoPlugin } from '@julian-querido/version-info/vite'`
-- Or use the core functionality without plugins: `import { getVersionInfo } from '@julian-querido/version-info/core'`
+#### Webpack Plugin Errors in Vite Projects
+- The webpack plugin is **optional** and only needed for webpack projects.
+- **Vite users:** Use the Vite plugin: `import { versionInfoPlugin } from '@julian-querido/version-info/vite'`.
+- Or use the core functionality without plugins: `import { getVersionInfo } from '@julian-querido/version-info/core'`.
+- You do **not** need webpack or any webpack dependencies in a Vite project.
 
 #### React Dependencies in Non-React Projects
 If you get React-related errors in a non-React project:
