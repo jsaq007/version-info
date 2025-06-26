@@ -5,12 +5,6 @@ export { incrementVersion, getEnvVar, parseBuildTime, getShortCommitHash } from 
 // Auto-detection exports (client-safe versions)
 export { getGitInfo, getPackageInfo, detectBuildSystem, getEnvironmentInfo } from './client';
 
-// Build system plugins
-export { versionInfoPlugin } from './vite-plugin';
-export { VersionInfoWebpackPlugin } from './webpack-plugin';
-export type { VersionInfoPluginOptions } from './vite-plugin';
-export type { VersionInfoWebpackPluginOptions } from './webpack-plugin';
-
 // Type exports
 export type {
   VersionInfo,

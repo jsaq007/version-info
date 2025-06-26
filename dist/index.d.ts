@@ -1,4 +1,3 @@
-import { Plugin } from 'vite';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import React from 'react';
 
@@ -98,81 +97,6 @@ declare const getEnvironmentInfo: () => {
     buildTime: number;
 };
 
-interface VersionInfoPluginOptions {
-    /**
-     * Override the package version
-     */
-    packageVersion?: string;
-    /**
-     * Override the production version
-     */
-    productionVersion?: string;
-    /**
-     * Override the environment
-     */
-    environment?: string;
-    /**
-     * Override the commit hash
-     */
-    commitHash?: string;
-    /**
-     * Override the build time
-     */
-    buildTime?: string;
-    /**
-     * Whether to include Git information
-     */
-    includeGitInfo?: boolean;
-    /**
-     * Whether to include build time
-     */
-    includeBuildTime?: boolean;
-}
-/**
- * Vite plugin that automatically sets up version information environment variables
- */
-declare function versionInfoPlugin(options?: VersionInfoPluginOptions): Plugin;
-
-interface VersionInfoWebpackPluginOptions {
-    /**
-     * Override the package version
-     */
-    packageVersion?: string;
-    /**
-     * Override the production version
-     */
-    productionVersion?: string;
-    /**
-     * Override the environment
-     */
-    environment?: string;
-    /**
-     * Override the commit hash
-     */
-    commitHash?: string;
-    /**
-     * Override the build time
-     */
-    buildTime?: string;
-    /**
-     * Whether to include Git information
-     */
-    includeGitInfo?: boolean;
-    /**
-     * Whether to include build time
-     */
-    includeBuildTime?: boolean;
-}
-/**
- * Webpack plugin that automatically sets up version information environment variables
- * Note: Webpack is an optional dependency. If webpack is not available, this plugin will throw an error.
- */
-declare class VersionInfoWebpackPlugin {
-    private options;
-    constructor(options?: VersionInfoWebpackPluginOptions);
-    apply(compiler: any): void;
-}
-
 /**
  * React hook to get version information
  */
@@ -198,5 +122,5 @@ declare const VersionDisplayAdvanced: React.FC<VersionDisplayProps>;
 
 //# sourceMappingURL=index.d.ts.map
 
-export { VersionDisplay, VersionDisplayAdvanced, VersionInfoWebpackPlugin, createVersionFormatter, getVersionInfo as default, detectBuildSystem, formatVersion, getEnvVar, getEnvironmentInfo, getGitInfo, getPackageInfo, getShortCommitHash, getVersionInfo, incrementVersion, parseBuildTime, useVersionDisplay, useVersionInfo, versionInfoPlugin };
-export type { BuildSystem, Environment, GitInfo, PackageInfo, VersionConfig, VersionDisplayProps, VersionFormatter, VersionInfo, VersionInfoPluginOptions, VersionInfoWebpackPluginOptions };
+export { VersionDisplay, VersionDisplayAdvanced, createVersionFormatter, getVersionInfo as default, detectBuildSystem, formatVersion, getEnvVar, getEnvironmentInfo, getGitInfo, getPackageInfo, getShortCommitHash, getVersionInfo, incrementVersion, parseBuildTime, useVersionDisplay, useVersionInfo };
+export type { BuildSystem, Environment, GitInfo, PackageInfo, VersionConfig, VersionDisplayProps, VersionFormatter, VersionInfo };
