@@ -7,6 +7,8 @@ export interface GitInfo {
   shortHash: string;
   branch: string;
   tag?: string;
+  commitsAfterTag?: number;
+  latestTag?: string;
 }
 
 export interface PackageInfo {
@@ -26,15 +28,53 @@ export const getGitInfo = (): GitInfo => {
     const shortHash = commitHash.slice(0, 7);
     const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
 
-    // Try to get the current tag
+    // Try to get the current tag (only semantic version tags)
     let tag: string | undefined;
     try {
-      tag = execSync('git describe --tags --exact-match', { encoding: 'utf8' }).trim();
+      const currentTag = execSync('git describe --tags --exact-match', { encoding: 'utf8' }).trim();
+      // Only use semantic version tags (v*.*.*)
+      if (currentTag.match(/^v\d+\.\d+\.\d+/)) {
+        tag = currentTag;
+      }
     } catch {
       // No exact tag match, that's okay
     }
 
-    return { commitHash, shortHash, branch, tag };
+    // Get the latest semantic version tag and commits after it
+    let latestTag: string | undefined;
+    let commitsAfterTag: number | undefined;
+
+    try {
+      // Get all tags and filter for semantic version tags
+      const allTags = execSync('git tag --list "v*" --sort=-version:refname', { encoding: 'utf8' }).trim().split('\n');
+      const semanticTags = allTags.filter(tag => tag.match(/^v\d+\.\d+\.\d+/)).filter(Boolean);
+
+      if (semanticTags.length > 0) {
+        latestTag = semanticTags[0]; // First one is the latest due to sort
+
+        // Count commits between HEAD and the latest semantic version tag
+        const commitsOutput = execSync(`git rev-list --count ${latestTag}..HEAD`, { encoding: 'utf8' }).trim();
+        commitsAfterTag = parseInt(commitsOutput, 10);
+
+        // If we're at the exact semantic version tag, commitsAfterTag should be 0
+        if (tag === latestTag) {
+          commitsAfterTag = 0;
+        }
+      }
+    } catch (error) {
+      // No tags found or other git error
+      latestTag = undefined;
+      commitsAfterTag = undefined;
+    }
+
+    return {
+      commitHash,
+      shortHash,
+      branch,
+      tag,
+      latestTag,
+      commitsAfterTag
+    };
   } catch (error) {
     // Git not available or not a git repository
     return { commitHash: '', shortHash: '', branch: '' };

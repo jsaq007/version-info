@@ -34,6 +34,8 @@ export interface GitInfo {
   shortHash: string;
   branch: string;
   tag?: string;
+  commitsAfterTag?: number;
+  latestTag?: string;
 }
 
 export interface PackageInfo {

@@ -5,7 +5,13 @@ import type { GitInfo, PackageInfo, BuildSystem } from './types';
  * Returns empty values since Git info is only available at build time
  */
 export const getGitInfo = (): GitInfo => {
-  return { commitHash: '', shortHash: '', branch: '' };
+  return {
+    commitHash: '',
+    shortHash: '',
+    branch: '',
+    commitsAfterTag: 0,
+    latestTag: undefined
+  };
 };
 
 /**

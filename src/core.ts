@@ -35,11 +35,14 @@ export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => 
   if (environment === 'production') {
     version = productionVersion;
   } else {
-    if (packageVersion !== productionVersionClean) {
-      // We're ahead of production, show next version
+    // Check if there are commits after the latest tag
+    const hasCommitsAfterTag = gitInfo.commitsAfterTag && gitInfo.commitsAfterTag > 0;
+
+    if (hasCommitsAfterTag) {
+      // We have commits after the latest tag, show next version
       version = incrementVersion(productionVersion);
     } else {
-      // We're at the same level as production, mirror production version
+      // We're at the exact tag or no commits after tag, mirror production version
       version = productionVersion;
     }
   }
@@ -62,7 +65,8 @@ export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => 
 const getEnvironmentVersion = (
   productionVersion: string,
   packageVersion: string,
-  environment: Environment
+  environment: Environment,
+  config?: Partial<VersionConfig>
 ): string => {
   // For production, always use the exact version from git tag
   if (environment === 'production') {
@@ -74,12 +78,18 @@ const getEnvironmentVersion = (
     ? productionVersion.slice(1)
     : productionVersion;
 
-  // If package.json version is different from production, we're ahead
-  if (packageVersion !== productionVersionClean) {
+  // Get Git info to check for commits after tag
+  const gitInfo = getGitInfo();
+
+  // Check if there are commits after the latest tag
+  const hasCommitsAfterTag = gitInfo.commitsAfterTag && gitInfo.commitsAfterTag > 0;
+
+  // If there are commits after the latest tag, we're ahead
+  if (hasCommitsAfterTag) {
     // We're ahead of production, show next version
     return incrementVersion(productionVersion);
   } else {
-    // We're at the same level as production, mirror production version
+    // We're at the exact tag or no commits after tag, mirror production version
     return productionVersion;
   }
 };

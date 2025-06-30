@@ -70,11 +70,19 @@ export class VersionInfoWebpackPlugin {
     const commitHash = this.options.commitHash || (this.options.includeGitInfo !== false ? gitInfo.commitHash : '');
     const buildTime = this.options.buildTime || (this.options.includeBuildTime !== false ? envInfo.buildTime.toString() : '');
 
-    // Determine the version based on environment
+    // Determine the version based on environment and commits after tag
     let version = productionVersion;
     if (environment !== 'production') {
-      // For non-production, increment the version
-      version = incrementVersion(productionVersion);
+      // Check if there are commits after the latest tag
+      const hasCommitsAfterTag = gitInfo.commitsAfterTag && gitInfo.commitsAfterTag > 0;
+
+      if (hasCommitsAfterTag) {
+        // We have commits after the latest tag, show next version
+        version = incrementVersion(productionVersion);
+      } else {
+        // We're at the exact tag or no commits after tag, mirror production version
+        version = productionVersion;
+      }
     }
 
     // Define environment variables

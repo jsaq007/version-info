@@ -22,6 +22,8 @@ vi.mock('./client', () => ({
     shortHash: 'cbf50cc',
     branch: 'main',
     tag: undefined,
+    commitsAfterTag: 0,
+    latestTag: 'v1.0.0',
   })),
   getPackageInfo: vi.fn(() => ({
     version: '1.0.0',
@@ -37,6 +39,7 @@ vi.mock('./client', () => ({
 }));
 
 import { getEnvVar, parseBuildTime, getShortCommitHash, incrementVersion } from './utils';
+import { getGitInfo } from './client';
 
 describe('getVersionInfo', () => {
   beforeEach(() => {
@@ -107,9 +110,18 @@ describe('getVersionInfo', () => {
   });
 
   it('should increment version for non-production when ahead', () => {
+    // Update the mock to simulate commits after tag
+    vi.mocked(getGitInfo).mockReturnValue({
+      commitHash: 'cbf50cc1234567890abcdef',
+      shortHash: 'cbf50cc',
+      branch: 'main',
+      tag: undefined,
+      commitsAfterTag: 2, // 2 commits after the latest tag
+      latestTag: 'v1.0.0',
+    });
+
     const config: Partial<VersionConfig> = {
       productionVersion: 'v1.0.0',
-      packageVersion: '1.0.1', // Different from production
       environment: 'staging',
     };
 
@@ -121,9 +133,18 @@ describe('getVersionInfo', () => {
   });
 
   it('should mirror production version when not ahead', () => {
+    // Update the mock to simulate no commits after tag
+    vi.mocked(getGitInfo).mockReturnValue({
+      commitHash: 'cbf50cc1234567890abcdef',
+      shortHash: 'cbf50cc',
+      branch: 'main',
+      tag: 'v1.0.0', // At exact tag
+      commitsAfterTag: 0, // No commits after tag
+      latestTag: 'v1.0.0',
+    });
+
     const config: Partial<VersionConfig> = {
       productionVersion: 'v1.0.0',
-      packageVersion: '1.0.0', // Same as production
       environment: 'staging',
     };
 

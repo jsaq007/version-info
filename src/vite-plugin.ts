@@ -53,16 +53,25 @@ export function versionInfoPlugin(options: VersionInfoPluginOptions = {}): Plugi
 
       // Use provided options or auto-detected values
       const packageVersion = options.packageVersion || packageInfo.version;
-      const productionVersion = options.productionVersion || `v${packageVersion}`;
+      // Use the latest Git tag as production version, fallback to package version
+      const productionVersion = options.productionVersion || gitInfo.latestTag || `v${packageVersion}`;
       const environment = options.environment || envInfo.nodeEnv;
       const commitHash = options.commitHash || (options.includeGitInfo !== false ? gitInfo.commitHash : '');
       const buildTime = options.buildTime || (options.includeBuildTime !== false ? envInfo.buildTime.toString() : '');
 
-      // Determine the version based on environment
+      // Determine the version based on environment and commits after tag
       let version = productionVersion;
       if (environment !== 'production') {
-        // For non-production, increment the version
-        version = incrementVersion(productionVersion);
+        // Check if there are commits after the latest tag
+        const hasCommitsAfterTag = gitInfo.commitsAfterTag && gitInfo.commitsAfterTag > 0;
+
+        if (hasCommitsAfterTag) {
+          // We have commits after the latest tag, show next version
+          version = incrementVersion(productionVersion);
+        } else {
+          // We're at the exact tag or no commits after tag, mirror production version
+          version = productionVersion;
+        }
       }
 
       const define: Record<string, string> = {
