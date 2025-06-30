@@ -49,15 +49,7 @@ export class VersionInfoWebpackPlugin {
     this.options = options;
   }
 
-  apply(compiler: any) {
-    // Check if webpack is available
-    let webpack: any;
-    try {
-      webpack = require('webpack');
-    } catch (error) {
-      throw new Error('Webpack is required for VersionInfoWebpackPlugin. Please install webpack as a dependency.');
-    }
-
+  apply(compiler: unknown) {
     // Auto-detect information
     const packageInfo = getPackageInfo();
     const gitInfo = getGitInfo();
@@ -85,8 +77,13 @@ export class VersionInfoWebpackPlugin {
       }
     }
 
+    // Check if webpack is available
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const webpack = require('webpack');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const DefinePlugin: any = webpack.DefinePlugin;
     // Define environment variables
-    const definePlugin = new webpack.DefinePlugin({
+    const definePlugin = new DefinePlugin({
       'process.env.VITE_VERSION': JSON.stringify(version),
       'process.env.VITE_PACKAGE_VERSION': JSON.stringify(packageVersion),
       'process.env.VITE_APP_ENV': JSON.stringify(environment),
@@ -104,7 +101,6 @@ export class VersionInfoWebpackPlugin {
         'process.env.VITE_TAG': JSON.stringify(gitInfo.tag),
       }),
     });
-
     definePlugin.apply(compiler);
   }
 } 

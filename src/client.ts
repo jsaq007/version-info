@@ -48,8 +48,8 @@ export const getEnvironmentInfo = () => {
       nodeEnv = process.env.NODE_ENV;
     }
     // Try window.__ENV__ (custom env)
-    else if (typeof window !== 'undefined' && (window as any).__ENV__?.NODE_ENV) {
-      nodeEnv = (window as any).__ENV__.NODE_ENV;
+    else if (typeof window !== 'undefined' && (window as unknown as { __ENV__?: { NODE_ENV?: string } }).__ENV__?.NODE_ENV) {
+      nodeEnv = (window as unknown as { __ENV__?: { NODE_ENV?: string } }).__ENV__?.NODE_ENV || 'development';
     }
   } catch {
     // Fallback to development

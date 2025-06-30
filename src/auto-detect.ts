@@ -34,7 +34,7 @@ export const getGitInfo = (): GitInfo => {
     }
 
     return { commitHash, shortHash, branch, tag };
-  } catch (error) {
+  } catch {
     // Git not available or not a git repository
     return { commitHash: '', shortHash: '', branch: '' };
   }
@@ -55,7 +55,7 @@ export const getPackageInfo = (): PackageInfo => {
       version: packageJson.version || '0.0.0',
       name: packageJson.name || 'unknown'
     };
-  } catch (error) {
+  } catch {
     // Fallback to default values
     return { version: '0.0.0', name: 'unknown' };
   }

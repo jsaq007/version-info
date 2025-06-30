@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 
 // Mock import.meta.env for Vite environments
 if (typeof globalThis !== 'undefined') {
-  (globalThis as any).import = {
+  (globalThis as unknown as { import?: unknown }).import = {
     meta: {
       env: {
         VITE_VERSION: 'v1.0.0',

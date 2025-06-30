@@ -48,7 +48,7 @@ describe('getEnvVar', () => {
     // Remove process.env.TEST_VAR so window.__ENV__ is used
     delete process.env.TEST_VAR;
     const originalWindow = global.window;
-    (global as any).window = {
+    (global as unknown as { window?: unknown }).window = {
       __ENV__: {
         TEST_VAR: 'browser-value',
       },

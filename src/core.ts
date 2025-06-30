@@ -1,4 +1,4 @@
-import type { VersionInfo, VersionConfig, Environment } from './types';
+import type { VersionInfo, VersionConfig } from './types';
 import { incrementVersion, getEnvVar, parseBuildTime, getShortCommitHash } from './utils';
 import { getGitInfo, getPackageInfo, getEnvironmentInfo } from './client';
 
@@ -24,13 +24,12 @@ export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => 
 
   // Determine the version with better defaults
   let version = 'v0.0.0';
-  let productionVersion = viteVersion || `v${packageInfo.version}`;
-  let packageVersion = vitePackageVersion || packageInfo.version;
+  const productionVersion = viteVersion || `v${packageInfo.version}`;
 
   // Clean production version for comparison
-  const productionVersionClean = productionVersion.startsWith('v')
-    ? productionVersion.slice(1)
-    : productionVersion;
+  // const productionVersionClean = productionVersion.startsWith('v')
+  //   ? productionVersion.slice(1)
+  //   : productionVersion;
 
   if (environment === 'production') {
     version = productionVersion;
@@ -57,41 +56,6 @@ export const getVersionInfo = (config?: Partial<VersionConfig>): VersionInfo => 
     shortHash: gitInfo.shortHash,
     tag: gitInfo.tag,
   };
-};
-
-/**
- * Determine the appropriate version for each environment
- */
-const getEnvironmentVersion = (
-  productionVersion: string,
-  packageVersion: string,
-  environment: Environment,
-  config?: Partial<VersionConfig>
-): string => {
-  // For production, always use the exact version from git tag
-  if (environment === 'production') {
-    return productionVersion;
-  }
-
-  // For other environments, determine if we're ahead of production
-  const productionVersionClean = productionVersion.startsWith('v')
-    ? productionVersion.slice(1)
-    : productionVersion;
-
-  // Get Git info to check for commits after tag
-  const gitInfo = getGitInfo();
-
-  // Check if there are commits after the latest tag
-  const hasCommitsAfterTag = gitInfo.commitsAfterTag && gitInfo.commitsAfterTag > 0;
-
-  // If there are commits after the latest tag, we're ahead
-  if (hasCommitsAfterTag) {
-    // We're ahead of production, show next version
-    return incrementVersion(productionVersion);
-  } else {
-    // We're at the exact tag or no commits after tag, mirror production version
-    return productionVersion;
-  }
 };
 
 /**

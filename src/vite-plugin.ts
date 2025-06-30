@@ -45,7 +45,7 @@ export interface VersionInfoPluginOptions {
 export function versionInfoPlugin(options: VersionInfoPluginOptions = {}): Plugin {
   return {
     name: 'version-info',
-    config(config, { command }) {
+    config(config) {
       // Auto-detect information
       const packageInfo = getPackageInfo();
       const gitInfo = getGitInfo();

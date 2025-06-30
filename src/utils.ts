@@ -1,5 +1,3 @@
-import type { VersionInfo, VersionConfig } from './types';
-
 /**
  * Increment version number by patch, minor, or major
  */
@@ -38,7 +36,7 @@ export const getEnvVar = (key: string): string | undefined => {
   // Try Vite environment variables first (import.meta.env)
   try {
     if (typeof import.meta !== 'undefined' && import.meta.env && key in import.meta.env) {
-      const value = (import.meta.env as any)[key];
+      const value = (import.meta.env as unknown as { [key: string]: unknown })[key];
       if (value !== undefined && value !== null) {
         return String(value);
       }
@@ -49,17 +47,17 @@ export const getEnvVar = (key: string): string | undefined => {
 
   // Try other possible sources for backward compatibility
   const possibleSources = [
-    () => (globalThis as any).import?.meta?.env?.[key],
-    () => (globalThis as any).__VITE_ENV__?.[key],
-    () => (globalThis as any).VITE_ENV?.[key],
+    () => (globalThis as unknown as { import?: { meta?: { env?: Record<string, unknown> } } }).import?.meta?.env?.[key],
+    () => (globalThis as unknown as { __VITE_ENV__?: Record<string, unknown> }).__VITE_ENV__?.[key],
+    () => (globalThis as unknown as { VITE_ENV?: Record<string, unknown> }).VITE_ENV?.[key],
     () => process.env?.[key],
-    () => (window as any)?.__ENV__?.[key],
+    () => (window as unknown as { __ENV__?: Record<string, unknown> }).__ENV__?.[key],
   ];
 
   for (let i = 0; i < possibleSources.length; i++) {
     try {
       const value = possibleSources[i]();
-      if (value) {
+      if (typeof value === 'string') {
         return value;
       }
     } catch {

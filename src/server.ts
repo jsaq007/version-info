@@ -61,7 +61,7 @@ export const getGitInfo = (): GitInfo => {
           commitsAfterTag = 0;
         }
       }
-    } catch (error) {
+    } catch {
       // No tags found or other git error
       latestTag = undefined;
       commitsAfterTag = undefined;
@@ -75,7 +75,7 @@ export const getGitInfo = (): GitInfo => {
       latestTag,
       commitsAfterTag
     };
-  } catch (error) {
+  } catch {
     // Git not available or not a git repository
     return { commitHash: '', shortHash: '', branch: '' };
   }
@@ -97,7 +97,7 @@ export const getPackageInfo = (): PackageInfo => {
       version: packageJson.version || '0.0.0',
       name: packageJson.name || 'unknown'
     };
-  } catch (error) {
+  } catch {
     // Fallback to default values
     return { version: '0.0.0', name: 'unknown' };
   }
