@@ -78,10 +78,8 @@ export class VersionInfoWebpackPlugin {
     }
 
     // Check if webpack is available
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const webpack = require('webpack');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const DefinePlugin: any = webpack.DefinePlugin;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+    const DefinePlugin: any = require('webpack').DefinePlugin;
     // Define environment variables
     const definePlugin = new DefinePlugin({
       'process.env.VITE_VERSION': JSON.stringify(version),
