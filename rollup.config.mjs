@@ -1,12 +1,13 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const commonjs = require('@rollup/plugin-commonjs');
-const typescript = require('@rollup/plugin-typescript');
-const terser = require('@rollup/plugin-terser').default;
-const dts = require('rollup-plugin-dts').default;
-
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import { default as terser } from '@rollup/plugin-terser';
+import dts from 'rollup-plugin-dts';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const packageJson = require('./package.json');
 
-module.exports = [
+export default [
   // Main library (client-safe)
   {
     input: 'src/index.ts',
@@ -76,28 +77,37 @@ module.exports = [
     ],
     external: ['child_process', 'fs', 'path'],
   },
-  // Vite plugin (server-side)
+  // Vite plugin (server-side) - ESM build (bundle everything)
   {
     input: 'src/vite.ts',
-    output: [
-      {
-        file: 'dist/vite-plugin.js',
-        format: 'cjs',
-        sourcemap: true,
-      },
-      {
-        file: 'dist/vite-plugin.esm.js',
-        format: 'esm',
-        sourcemap: true,
-      },
-    ],
+    output: {
+      file: 'dist/vite-plugin.esm.js',
+      format: 'esm',
+      sourcemap: true,
+    },
     plugins: [
       resolve(),
       commonjs(),
       typescript({ tsconfig: './tsconfig.json' }),
       terser(),
     ],
-    external: ['vite'],
+    external: [], // bundle everything for ESM
+  },
+  // Vite plugin (server-side) - CJS build (externalize node built-ins)
+  {
+    input: 'src/vite.ts',
+    output: {
+      file: 'dist/vite-plugin.js',
+      format: 'cjs',
+      sourcemap: true,
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.json' }),
+      terser(),
+    ],
+    external: ['vite', 'child_process', 'fs', 'path'],
   },
   // Webpack plugin (server-side)
   {
